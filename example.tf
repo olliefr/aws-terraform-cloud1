@@ -4,6 +4,14 @@ terraform {
       source = "hashicorp/aws"
     }
   }
+
+  backend "remote" {
+    organization = "ofr-study"
+
+    workspaces {
+      name = "aws-terraform-cloud1"
+    }
+  }
 }
 
 provider "aws" {
