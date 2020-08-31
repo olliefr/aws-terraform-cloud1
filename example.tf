@@ -16,7 +16,7 @@ terraform {
 
 provider "aws" {
   profile = "default"
-  region  = var.region
+  region  = var.aws_region
 }
 
 resource "aws_instance" "example" {
