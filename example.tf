@@ -14,8 +14,13 @@ terraform {
   }
 }
 
+provider "random" {
+  version = "2.2"
+}
+
+# Application server
 provider "aws" {
-  profile = "default"
+  version = "~> 3.0"
   region  = var.aws_region
 }
 
@@ -30,5 +35,26 @@ resource "aws_eip" "ip" {
 }
 
 output "ip" {
+  description = "The public IP of the application server."
   value = aws_eip.ip.public_ip
+}
+
+# Database service (DynamoDB)
+resource "random_pet" "table_name" {}
+
+resource "aws_dynamodb_table" "tfc_example_table" {
+  name = "${var.db_table_name}-${random_pet.table_name.id}"
+
+  read_capacity  = var.db_read_capacity
+  write_capacity = var.db_write_capacity
+  hash_key       = "UUID"
+
+  attribute {
+    name = "UUID"
+    type = "S"
+  }
+}
+
+output "tfc_example_table_arn" {
+  value = aws_dynamodb_table.tfc_example_table.arn
 }
